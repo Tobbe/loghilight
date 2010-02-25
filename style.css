@@ -1,0 +1,32 @@
+label {
+	display: block;
+}
+
+textarea {
+	display: block;
+	margin: 0 0 1em 0;
+}
+
+span.hl0 {
+	background: #f00;
+}
+
+span.hl1 {
+	background: #0f0;
+}
+
+span.hl2 {
+	background: #00f;
+}
+
+span.hl3 {
+	background: #ff0;
+}
+
+span.hl4 {
+	background: #0ff;
+}
+		
+span.hl5 {
+	background: #f0f;
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<title>Highlight</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta name="Language" content="English, en-us">
+	<meta name="Author" content="Tobbe Lundberg">
+
+	<link rel="stylesheet" href="style.css" type="text/css" media="screen">
+
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="arrayfunctions.js"></script>
+	<script type="text/javascript" src="hilight.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#hilight_form').submit(function() {
+				var parsedText = hilight($('#log_area').val(), $('#words_include').val(), $('#words_hilight').val());
+				$('#log').html(parsedText);
+				return false;
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1>Tobbe's log filterer and highlighter</h1>
+	<form id="hilight_form" action="http://www.google.com">
+		<label for="words_include">Strings that must exist. One on each line</label>
+		<textarea id="words_include" title="Enter strings that must exist on each row of the log" name="words_include" rows="5" cols="15"></textarea>
+		<label for="words_hilight">Strings that will be highlighted. One on each line</label>
+		<textarea id="words_hilight" title="Enter strings that should be highlighted" name="words_hilight" rows="5" cols="15"></textarea>
+		<label for="log_area">Log text to highlight</label>
+		<textarea id="log_area" title="Enter the log text you want to highlight" name="log_area" rows="20" cols="80">This is some log text yo!
+I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.</textarea>
+		<input type="submit" value="Process log">
+	</form>
+	<pre id="log"></pre>
+</body>
+</html>
