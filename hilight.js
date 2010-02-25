@@ -8,7 +8,8 @@ function hilight(logText, wordsInclude, wordsHilight) {
 		var i = 0;
 		while (i < logLines.length) {
 			wordsToInclude.forEach(function(w) {
-				if (logLines[i].search(w) == -1) {
+				var regex = new RegExp(w);
+				if (!regex.test(logLines[i])) {
 					logLines[i] = '';
 				}
 			});
