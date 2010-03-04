@@ -1,9 +1,9 @@
 function hilight(logText, wordsInclude, wordsHilight) {
-	var logLines = logText.split(/\r\n|\r|\n/g);
+	var logLines = logText.split(/\r\n|\r|\n/);
 	var hashLines = logLines.slice();
 
 	if (wordsInclude && wordsInclude != '') {
-		var wordsToInclude = wordsInclude.split(/\r\n|\r|\n/g);
+		var wordsToInclude = wordsInclude.split(/\r\n|\r|\n/);
 
 		var i = 0;
 		while (i < logLines.length) {
@@ -17,11 +17,11 @@ function hilight(logText, wordsInclude, wordsHilight) {
 			++i;
 		}
 		
-		logLines = logLines.filter(function(x) { return x != ''; });
+		logLines = logLines.filter(function(line) { return line != ''; });
 	}
 
 	if (wordsHilight && wordsHilight != '') {
-		var wordsToHilight = wordsHilight.split(/\r\n|\r|\n/g);
+		var wordsToHilight = wordsHilight.split(/\r\n|\r|\n/);
 
 		var i = 0;
 		while (i < logLines.length) {
