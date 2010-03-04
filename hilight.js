@@ -5,19 +5,11 @@ function hilight(logText, wordsInclude, wordsHilight) {
 	if (wordsInclude && wordsInclude != '') {
 		var wordsToInclude = wordsInclude.split(/\r\n|\r|\n/);
 
-		var i = 0;
-		while (i < logLines.length) {
-			wordsToInclude.forEach(function(w) {
-				var regex = new RegExp(w);
-				if (!regex.test(logLines[i])) {
-					logLines[i] = '';
-				}
+		logLines.forEach(function(logline) {
+			wordsToInclude.forEach(function(word) {
+				logLines = logLines.filter(function(line) { return (new RegExp(word)).test(line); });
 			});
-
-			++i;
-		}
-		
-		logLines = logLines.filter(function(line) { return line != ''; });
+		});
 	}
 
 	if (wordsHilight && wordsHilight != '') {
