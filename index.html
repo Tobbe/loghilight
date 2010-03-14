@@ -11,36 +11,68 @@
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="arrayfunctions.js"></script>
 	<script type="text/javascript" src="hilight.js"></script>
+	<script type="text/javascript" src="filterlines.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('#hilight_form').submit(function() {
-				var parsedText = hilight($('#log_area').val(), $('#words_include').val(), $('#words_hilight').val());
+				var parsedText = filterLines($('#log_area').val(), $('#words_include').val());
+				parsedText = hilight(parsedText, $('#words_hilight').val());
 				$('#log').html(parsedText);
-				$('#hilight_form').slideToggle();
+				$('#hilight_form').toggle();
+				$('#offset').height($('#search').outerHeight());
 
 				return false;
 			});
 
 			$('a:first').click(function() {
-				$('#hilight_form').slideToggle();
+				$('#hilight_form').toggle();
+				$('#offset').height($('#search').outerHeight());
 
 				return false;
 			});
+
+			var searchDiv = $('#search');
+			var minHeight = searchDiv.height();
+
+			var offsetDiv = $('<div id="offset"></div>');
+			offsetDiv.height(searchDiv.outerHeight());
+			offsetDiv.width(searchDiv.outerWidth()+100);
+			offsetDiv.css('background', 'white');
+			offsetDiv.insertBefore(searchDiv);
+
+			$('#search').css('position', 'absolute');
+			$('#search').css('top', offsetDiv.position().top);
+			$('#search').css('left', offsetDiv.position().left);
+
+			window.onscroll = function() {
+				if (window.XMLHttpRequest) { // IE 6 doesn't implement position fixed nicely...
+					if ($(window).height() > minHeight) {
+						if (document.documentElement.scrollTop > 36 || self.pageYOffset > 36) {
+							$('#search').css('position', 'fixed');
+							$('#search').css('top', '8px');
+						} else {
+							$('#search').css('position', 'absolute');
+							$('#search').css('top', offsetDiv.position().top);
+						}
+					}
+				}
+			}
 		});
 	</script>
 </head>
 <body>
 	<h1>Tobbe's log filterer and highlighter</h1>
-	<p><a href="">Toggle search form</a></p>
-	<form id="hilight_form" action="http://www.google.com">
-		<div>
-			<label for="words_include">Strings that must exist. One on each line</label>
-			<textarea id="words_include" title="Enter strings that must exist on each row of the log" name="words_include" rows="5" cols="40"></textarea>
-			<label for="words_hilight">Strings that will be highlighted. One on each line</label>
-			<textarea id="words_hilight" title="Enter strings that should be highlighted" name="words_hilight" rows="5" cols="40"></textarea>
-			<label for="log_area">Log text to highlight</label>
-			<textarea id="log_area" title="Enter the log text you want to highlight" name="log_area" rows="20" cols="80">This is some log text yo!
+	<div id="search">
+		<p><a href="">Toggle search form</a></p>
+		<form id="hilight_form" action="http://www.google.com">
+			<div>
+				<label for="words_include">Strings that must exist. One on each line</label>
+				<textarea id="words_include" title="Enter strings that must exist on each row of the log" name="words_include" rows="5" cols="40"></textarea>
+				<label for="words_hilight">Strings that will be highlighted. One on each line</label>
+				<textarea id="words_hilight" title="Enter strings that should be highlighted" name="words_hilight" rows="5" cols="40"></textarea>
+				<label for="log_area">Log text to highlight</label>
+				<textarea id="log_area" title="Enter the log text you want to highlight" name="log_area" rows="20" cols="80">This is some log text yo!
 I wonder what happens to my linebreaks...
 Will they show up at all?
 Will my JavaScript text be able to see them?
@@ -58,10 +90,164 @@ I aim at supporting regexp for the search strings. We'll see how that turns out.
 [def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
 [def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
 [ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
+[ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92I wonder what happens to my linebreaks...
+Will they show up at all?
+Will my JavaScript text be able to see them?
+	Using &lt;pre&gt; tags to keep spaces/tabs. Will probably make the log easier to read.
+		Hopefully...
+I aim at supporting regexp for the search strings. We'll see how that turns out.
+[abc] adlfjk sdfl jsdlf jsdlf jsdlkf j
+[abc] lasdkfjlsdkj flsdjf sldjf skdljf l
+[def] sldfjsdlkfj lsdjf lsdjf lsdjflsdlfkjs ldjfsl jd
+[def] lsdfjsld jfdls jfldsjf dfhewiourwoeurow uwoeu rweoiru owurxc,mfv,xcn 
+[ghi] lkfjsdl jfsdlf jlsdfj lsdjflsjfl jsldfjsl dfjslkjflksfklsjdf
+[ghi] slkdfj lskdjsdjf uerio wlvnslkd nvowhfoehf wennoewih owei hewn noweiiwo
+[abc] sdlfouf powehi owef weofh37 09234032230 80293 onf vou9vf0owiej fwe0uf on
+[abc] 093285 02938ojf09 uodij f0odufj u 23 hfhoeh lkhf 98j3o 9o3f oh ohfu 
+[def] sdfu0owe owen wjh fweo0 hfwehf we0 we0 our9302u joweh owiehf 023 
+[def] fo0u03h oj 0 0jfojfoh oh oih h 039u032jf09 09j 0j 0f j j
+[ghi] owjfodh h09ewu owehfn 3 h03 hio nfwieh fwe9h f09 yiwh weui h9w8
 [ghi] f0he0whf ioweh ihf 032 ohf lksjfd 0weurwe9u rwoe uwe oweur0wuwoh fed92</textarea>
-			<input type="submit" value="Process log">
-		</div>
-	</form>
+				<input type="submit" value="Process log">
+			</div>
+		</form>
+	</div>
 	<pre id="log"></pre>
 </body>
 </html>

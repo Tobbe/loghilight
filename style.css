@@ -1,3 +1,25 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	padding: 8px;
+}
+
+h1 {
+	padding: 0 8px 8px 0;
+	font-size: 28px;
+}
+
+#search {
+	width: 700px;
+	background: #cfc;
+	border: 1px solid #080;
+	padding: 14px;
+	margin-bottom: 8px;
+}
+
 label {
 	display: block;
 }
