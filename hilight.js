@@ -14,7 +14,7 @@ function hilight(logText, wordsHilight) {
 				var line = "";
 				var ending = "";
 
-				while ((matchArray = regex.exec(logLines[i])) != null) {
+				while (w != '' && (matchArray = regex.exec(logLines[i])) != null) {
 					var foundAt = matchArray.index;
 					var matchLen = matchArray[0].length;
 					line = logLines[i].substring(0, foundAt);
