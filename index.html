@@ -17,7 +17,8 @@
 		$(document).ready(function() {
 			$('#hilight_form').submit(function() {
 				var parsedText = filterLines($('#log_area').val(), $('#words_include').val());
-				parsedText = hilight(parsedText, $('#words_hilight').val());
+				var hilighter = new Highlighter();
+				parsedText = hilighter.highlight(parsedText, $('#words_hilight').val());
 				$('#log').html(parsedText);
 				$('#hilight_form').toggle();
 				$('#offset').height($('#search').outerHeight());
