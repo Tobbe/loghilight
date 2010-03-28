@@ -18,11 +18,28 @@
 		$(document).ready(function() {
 			$('#hilight_form').submit(function() {
 				var parsedText = filterLines($('#log_area').val(), $('#words_include').val());
-				var hilighter = new Highlighter();
+				var hilighter = new Highlighter(parsedText);
 				parsedText = hilighter.highlight(parsedText, $('#words_hilight').val());
 				$('#log').html(parsedText);
 				$('#hilight_form').toggle();
 				$('#offset').height($('#search').outerHeight());
+
+				var totLines = hilighter.totalNumberOfLines();
+				var lineScale = $('#hitbar').height() / totLines;
+				var hitLines = hilighter.linesWithHits();
+				$('#hitbar').html('');
+
+				for (var i = 0; i < hitLines.length; ++i) {
+					var hitmarkerDiv = $('<div class="hitMarker"></div>');
+					hitmarkerDiv.css('background', 'orange');
+					hitmarkerDiv.css('position', 'absolute');
+					hitmarkerDiv.css('top', Math.round(hitLines[i].row * lineScale) + 'px');
+					hitmarkerDiv.css('left', '0');
+					hitmarkerDiv.css('height', Math.round(lineScale) + 'px');
+					hitmarkerDiv.css('width', '20px');
+					hitmarkerDiv.css('border', '0px solid black');
+					$('#hitbar').append(hitmarkerDiv);
+				}
 
 				return false;
 			});
@@ -60,6 +77,16 @@
 					}
 				}
 			}
+			
+			var hitbarDiv = $('<div id="hitbar"></div>');
+			hitbarDiv.height($(window).height()-10);
+			hitbarDiv.width(20);
+			hitbarDiv.css('background', 'grey');
+			hitbarDiv.css('position', 'fixed');
+			hitbarDiv.css('top', '4px');
+			hitbarDiv.css('right', '6px');
+			hitbarDiv.css('border', '1px solid black');
+			hitbarDiv.insertAfter(searchDiv);
 		});
 	</script>
 </head>

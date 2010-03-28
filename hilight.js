@@ -1,8 +1,12 @@
-function Highlighter() {}
+function Highlighter(logText) {
+	this.logText = logText;
+	this.logLines = logText.split(/\r\n|\r|\n/);
+	this.hitlist = [];
+}
 
 Highlighter.prototype.highlight = function (logText, wordsToHighlight) {
-	hitlist = this.findMatches(logText, wordsToHighlight);
-	hitlist.sort(function(lhs, rhs) {
+	this.hitlist = this.findMatches(logText, wordsToHighlight);
+	this.hitlist.sort(function(lhs, rhs) {
 		if (lhs.index < rhs.index) {
 			return -1;
 		} else if (lhs.index > rhs.index) {
@@ -23,7 +27,7 @@ Highlighter.prototype.highlight = function (logText, wordsToHighlight) {
 	var output = "";
 
 	var previousHit = new Hit(0, 0, '', '');
-	hitlist.forEach(function(hit, index) {
+	this.hitlist.forEach(function(hit, index) {
 		output += this.htmlEncode(logText.substring(previousHit.index, hit.index)) + hit.text;
 		previousHit = hit;
 	}.scope(this));
@@ -40,7 +44,6 @@ Highlighter.prototype.findMatches = function (logText, wordsToHighlight) {
 	}
 
 	var logLines = logText.split(/\r\n|\r|\n/);
-	var hits = [];
 	var newlineCharCount = 1; // At least one
 	if (logText[logLines[0].length + 1] == '\n' || logText[logLines[0].length + 1] == '\r') {
 		newlineCharCount = 2;
@@ -53,6 +56,7 @@ Highlighter.prototype.findMatches = function (logText, wordsToHighlight) {
 
 	var i = 0;
 	var accumulatedLength = 0;
+	var hits = [];
 	while (i < logLines.length) {
 		wordsToHilight.forEach(function(w, index) {
 			var regex = new RegExp(w, "g");
@@ -78,7 +82,7 @@ Highlighter.prototype.findMatches = function (logText, wordsToHighlight) {
 	return hits;
 };
 
-Highlighter.prototype.htmlEncode = function(htmlString) {
+Highlighter.prototype.htmlEncode = function (htmlString) {
 	var encoded = "";
 	for (var i = 0; i < htmlString.length; ++i) {
 		encoded += this.htmlEncodeChar(htmlString[i]);
@@ -99,6 +103,26 @@ Highlighter.prototype.htmlEncodeChar = function(htmlChar) {
 
 	return htmlChar;
 };
+
+Highlighter.prototype.totalNumberOfLines = function () {
+	return this.logLines.length;
+};
+
+Highlighter.prototype.linesWithHits = function () {
+	var tmp = [];
+	outer: for (var i = 0; i < this.hitlist.length; ++i) {
+		var j = 0;
+		for (; j < i; j++) {
+			if (this.hitlist[i].row == this.hitlist[j].row) {
+				continue outer;
+			}
+		}
+
+		tmp.push(this.hitlist[i]);
+	}
+
+	return tmp;
+}
 
 function Hit(row, index, match, text) {
 	this.row = row;
