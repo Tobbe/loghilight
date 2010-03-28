@@ -39,6 +39,7 @@ span.hl1 {
 
 span.hl2 {
 	background: #00f;
+	color: #fff;
 }
 
 span.hl3 {
@@ -51,4 +52,17 @@ span.hl4 {
 		
 span.hl5 {
 	background: #f0f;
+}
+
+span.hl6 {
+	background: #f80;
+}
+
+span.hl7 {
+	background: #050;
+	color: #fff;
+}
+
+span.hl8 {
+	background: #bbb;
 }
