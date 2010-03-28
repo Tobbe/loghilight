@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="style.css" type="text/css" media="screen">
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="lib.js"></script>
 	<script type="text/javascript" src="arrayfunctions.js"></script>
 	<script type="text/javascript" src="hilight.js"></script>
 	<script type="text/javascript" src="filterlines.js"></script>
@@ -66,7 +67,7 @@
 	<h1>Tobbe's log filterer and highlighter</h1>
 	<div id="search">
 		<p><a href="">Toggle search form</a></p>
-		<form id="hilight_form" action="http://www.google.com">
+		<form id="hilight_form" action="http://www.google.com" method="post">
 			<div>
 				<label for="words_include">Strings that must exist. One on each line</label>
 				<textarea id="words_include" title="Enter strings that must exist on each row of the log" name="words_include" rows="5" cols="40"></textarea>
