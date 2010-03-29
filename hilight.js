@@ -66,9 +66,10 @@ Highlighter.prototype.findMatches = function (logText, wordsToHighlight) {
 			while ((matchArray = regex.exec(logLines[i])) != null) {
 				var foundAt = matchArray.index;
 				var matchLen = matchArray[0].length;
+				var hitStartIndex = accumulatedLength + foundAt;
 
-				hits.push(new Hit(i, accumulatedLength + foundAt, matchArray[0], '<span class="hl' + index % 9 + '">'));
-				hits.push(new Hit(i, accumulatedLength + foundAt + matchLen, matchArray[0], '</span>'));
+				hits.push(new Hit(i, hitStartIndex, matchArray[0], '<a name="hit' + hitStartIndex + '"><span class="hl' + index % 9 + '">'));
+				hits.push(new Hit(i, hitStartIndex + matchLen, matchArray[0], '</span></a>'));
 
 				line = logLines[i].substring(0, foundAt);
 			}

@@ -30,15 +30,16 @@
 				$('#hitbar').html('');
 
 				for (var i = 0; i < hitLines.length; ++i) {
-					var hitmarkerDiv = $('<div class="hitMarker"></div>');
-					hitmarkerDiv.css('background', 'orange');
-					hitmarkerDiv.css('position', 'absolute');
-					hitmarkerDiv.css('top', Math.round(hitLines[i].row * lineScale) + 'px');
-					hitmarkerDiv.css('left', '0');
-					hitmarkerDiv.css('height', Math.round(lineScale) + 'px');
-					hitmarkerDiv.css('width', '20px');
-					hitmarkerDiv.css('border', '0px solid black');
-					$('#hitbar').append(hitmarkerDiv);
+					var hitmarkerA = $('<a href="#hit' + hitLines[i].index + '" class="hitMarker"></a>');
+					hitmarkerA.css('display', 'block');
+					hitmarkerA.css('background', 'orange');
+					hitmarkerA.css('position', 'absolute');
+					hitmarkerA.css('top', Math.round(hitLines[i].row * lineScale) + 'px');
+					hitmarkerA.css('left', '0');
+					hitmarkerA.css('height', Math.round(lineScale) + 'px');
+					hitmarkerA.css('width', '20px');
+					hitmarkerA.css('border', '0px solid black');
+					$('#hitbar').append(hitmarkerA);
 				}
 
 				return false;
